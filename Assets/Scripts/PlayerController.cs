@@ -27,6 +27,15 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         float speed = Input.GetAxisRaw("Horizontal");
-        playerAnimator.SetFloat("Speed", speed);
+        playerAnimator.SetFloat("Speed", Mathf.Abs(speed)); // Mathf.Abs() is used for converting negative values to positive values.
+
+        Vector3 scale = transform.localScale;
+
+        if (speed < 0) scale.x = -1f * Mathf.Abs(scale.x);
+        else if (speed > 0) scale.x = Mathf.Abs(scale.x);
+
+        //scale.x = (speed > 0) ? -1f * Mathf.Abs(scale.x) : Mathf.Abs(scale.x);
+
+        transform.localScale = scale;
     }
 }
