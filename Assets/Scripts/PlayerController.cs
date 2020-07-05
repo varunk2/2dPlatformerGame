@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     public Animator playerAnimator;
     public BoxCollider2D playerCollider;     // Creating a BoxCollider2D variable
     private float p_sizeX, p_sizeY;          // Variables for storing X and Y coordinates of Box Collider.
+    public float speed;
 
     // Start is called before the first frame update
     void Start()
@@ -20,36 +21,53 @@ public class PlayerController : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {        
-        // Run animation code.
-        float speed = Input.GetAxisRaw("Horizontal");
-        playerAnimator.SetFloat("Speed", Mathf.Abs(speed)); // Mathf.Abs() is used for converting negative values to positive values.
+    {
+        // Run animation.
+        float h_Movement = Input.GetAxisRaw("Horizontal");
+        PlayerAnimation(h_Movement);
+        MoveCharacter(h_Movement);
+
+        // Crouch animation.
+        PlayerCrouch();
+
+    }
+
+    private void MoveCharacter(float h_Movement)
+    {
+        Vector3 position = transform.position;
+        position.x += h_Movement * speed * Time.deltaTime;
+        transform.position = position;
+    }
+
+    private void PlayerAnimation(float h_Movement)
+    {
+        playerAnimator.SetFloat("Speed", Mathf.Abs(h_Movement)); // Mathf.Abs() is used for converting negative values to positive values.
 
         Vector3 scale = transform.localScale;
-        if (speed < 0)
+        if (h_Movement < 0)
         {
             scale.x = -1f * Mathf.Abs(scale.x);
         }
-        else if (speed > 0)
+        else if (h_Movement > 0)
         {
             scale.x = Mathf.Abs(scale.x);
         }
 
         transform.localScale = scale;
+    }
 
-        // Crouch animation code.
+    private void PlayerCrouch()
+    {
+        // Crouch animation.
         if (Input.GetKey(KeyCode.LeftControl))
         {
             playerAnimator.SetBool("isCrouch", true);
             playerCollider.size = new Vector2(x: p_sizeX, 2.24f);   // Resizing BoxCollider in crouch
-            Debug.Log("Current BoxCollider2D Size while crouching: " + GetComponent<BoxCollider2D>().size);
         }
-        else {
+        else
+        {
             playerAnimator.SetBool("isCrouch", false);
             playerCollider.size = new Vector2(x: p_sizeX, y: p_sizeY);   // Resetting the BoxCollider in idle
-            Debug.Log("Current BoxCollider2D Size while standing: " + GetComponent<BoxCollider2D>().size);
         }
-
-
     }
 }
