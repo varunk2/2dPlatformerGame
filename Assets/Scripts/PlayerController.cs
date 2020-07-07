@@ -4,19 +4,29 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public Animator playerAnimator;
+    private Animator playerAnimator;
     public BoxCollider2D playerCollider;     // Creating a BoxCollider2D variable
-    private float p_sizeX, p_sizeY;          // Variables for storing X and Y coordinates of Box Collider.
-    public float speed;
+    private SpriteRenderer spriteRender;
+    private Rigidbody2D rb2d;
+
+    private float playerColliderSizeX, playerColliderSizeY;          // Variables for storing X and Y coordinates of Box Collider.
+    private float speed = 5.0f, highSpeed = 10.0f, jump = 3.0f;
+
+
+    private void Awake()
+    {
+        playerAnimator = gameObject.GetComponent<Animator>();
+        rb2d = gameObject.GetComponent<Rigidbody2D>();
+        spriteRender = gameObject.GetComponent<SpriteRenderer>();
+        playerCollider = GetComponent<BoxCollider2D>();
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-
         // Initializing and assigning variables
-        playerCollider = GetComponent<BoxCollider2D>();
-        p_sizeX = playerCollider.size.x;
-        p_sizeY = playerCollider.size.y;
+        playerColliderSizeX = playerCollider.size.x;
+        playerColliderSizeY = playerCollider.size.y;
     }
 
     // Update is called once per frame
@@ -24,23 +34,16 @@ public class PlayerController : MonoBehaviour
     {
         // Run animation.
         float h_Movement = Input.GetAxisRaw("Horizontal");
-        PlayerAnimation(h_Movement);
-        MoveCharacter(h_Movement);
+        float vertical = Input.GetAxisRaw("Jump");
 
-        // Crouch animation.
-        PlayerCrouch();
+        playerRun(h_Movement, vertical);
+        playerCrouch();
+        playerJump(vertical);
+    }    
 
-    }
-
-    private void MoveCharacter(float h_Movement)
+    private void playerRun(float h_Movement, float vertical)
     {
-        Vector3 position = transform.position;
-        position.x += h_Movement * speed * Time.deltaTime;
-        transform.position = position;
-    }
-
-    private void PlayerAnimation(float h_Movement)
-    {
+        MoveCharacter(h_Movement, vertical);
         playerAnimator.SetFloat("Speed", Mathf.Abs(h_Movement)); // Mathf.Abs() is used for converting negative values to positive values.
 
         Vector3 scale = transform.localScale;
@@ -54,20 +57,48 @@ public class PlayerController : MonoBehaviour
         }
 
         transform.localScale = scale;
+
+        // Crouch animation.
+        //playerCrouch();
+
+        // Jump animation.
+        //playerJump(vertical);
     }
 
-    private void PlayerCrouch()
+    private void playerCrouch()
     {
         // Crouch animation.
         if (Input.GetKey(KeyCode.LeftControl))
         {
             playerAnimator.SetBool("isCrouch", true);
-            playerCollider.size = new Vector2(x: p_sizeX, 2.24f);   // Resizing BoxCollider in crouch
+            playerCollider.size = new Vector2(x: playerColliderSizeX, y: 2.24f);   // Resizing BoxCollider in crouch
         }
         else
         {
             playerAnimator.SetBool("isCrouch", false);
-            playerCollider.size = new Vector2(x: p_sizeX, y: p_sizeY);   // Resetting the BoxCollider in idle
+            playerCollider.size = new Vector2(x: playerColliderSizeX, y: playerColliderSizeY);   // Resetting the BoxCollider in idle
         }
+    }
+
+    // Crouch animation.
+    private void playerJump(float vertical)
+    {
+        if (vertical > 0)
+        {
+            rb2d.AddForce(new Vector2(0f, jump), ForceMode2D.Force);
+            playerAnimator.SetBool("Jump", true);
+        }
+        else
+        {
+            playerAnimator.SetBool("Jump", false);
+        }
+    }
+
+    private void MoveCharacter(float h_Movement, float vertical)
+    {
+        // Mover character horizontally
+        Vector3 position = transform.position;
+        position.x += h_Movement * speed * Time.deltaTime;
+        transform.position = position;
     }
 }
