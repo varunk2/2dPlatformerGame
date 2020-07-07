@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb2d;
 
     private float playerColliderSizeX, playerColliderSizeY;          // Variables for storing X and Y coordinates of Box Collider.
-    private float speed = 5.0f, highSpeed = 10.0f, jump = 3.0f;
+    private float speed = 5.0f, jump = 3.0f;
 
 
     private void Awake()
