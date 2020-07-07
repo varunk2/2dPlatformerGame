@@ -5,11 +5,12 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Animator playerAnimator;
-    public BoxCollider2D playerCollider;     // Creating a BoxCollider2D variable
+    private BoxCollider2D playerCollider;    // Creating a BoxCollider2D variable
     private SpriteRenderer spriteRender;
     private Rigidbody2D rb2d;
 
-    private float playerColliderSizeX, playerColliderSizeY;          // Variables for storing X and Y coordinates of Box Collider.
+    private float playerColliderSizeX, playerColliderSizeY;     // Variables for storing X and Y coordinates of Box Collider.
+    private float playerColliderYAxis = 2.24f;
     private float speed = 5.0f, jump = 3.0f;
 
 
@@ -21,7 +22,6 @@ public class PlayerController : MonoBehaviour
         playerCollider = GetComponent<BoxCollider2D>();
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         // Initializing and assigning variables
@@ -29,7 +29,6 @@ public class PlayerController : MonoBehaviour
         playerColliderSizeY = playerCollider.size.y;
     }
 
-    // Update is called once per frame
     void Update()
     {
         // Run animation.
@@ -57,12 +56,6 @@ public class PlayerController : MonoBehaviour
         }
 
         transform.localScale = scale;
-
-        // Crouch animation.
-        //playerCrouch();
-
-        // Jump animation.
-        //playerJump(vertical);
     }
 
     private void playerCrouch()
@@ -71,7 +64,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftControl))
         {
             playerAnimator.SetBool("isCrouch", true);
-            playerCollider.size = new Vector2(x: playerColliderSizeX, y: 2.24f);   // Resizing BoxCollider in crouch
+            playerCollider.size = new Vector2(x: playerColliderSizeX, y: playerColliderYAxis);   // Resizing BoxCollider in crouch
         }
         else
         {
