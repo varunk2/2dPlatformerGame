@@ -11,7 +11,8 @@ public class PlayerController : MonoBehaviour
 
     private float playerColliderSizeX, playerColliderSizeY;     // Variables for storing X and Y coordinates of Box Collider.
     private float playerColliderYAxis = 2.24f;
-    private float speed = 5.0f, jump = 3.0f;
+    public float jump;
+    private float speed = 5.0f;//, jump = 6.0f;
 
 
     private void Awake()
@@ -19,7 +20,7 @@ public class PlayerController : MonoBehaviour
         playerAnimator = gameObject.GetComponent<Animator>();
         rb2d = gameObject.GetComponent<Rigidbody2D>();
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
-        playerCollider = GetComponent<BoxCollider2D>();
+        playerCollider = gameObject.GetComponent<BoxCollider2D>();
     }
 
     void Start()
