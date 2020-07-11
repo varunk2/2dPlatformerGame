@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     public ScoreController scoreController;
+    //public float jump;
 
     private Animator playerAnimator;
     private BoxCollider2D playerCollider;    // Creating a BoxCollider2D variable
@@ -15,8 +16,7 @@ public class PlayerController : MonoBehaviour
 
     private float playerColliderSizeX, playerColliderSizeY;     // Variables for storing X and Y coordinates of Box Collider.
     private float playerColliderYAxis = 2.24f;
-    public float jump;
-    private float speed = 5.0f;//, jump = 6.0f;
+    private float speed = 5.0f, jump = 7.0f;
     private bool onGround = true;    
 
     private void Awake()
@@ -25,8 +25,6 @@ public class PlayerController : MonoBehaviour
         rb2d = gameObject.GetComponent<Rigidbody2D>();
         spriteRender = gameObject.GetComponent<SpriteRenderer>();
         playerCollider = gameObject.GetComponent<BoxCollider2D>();
-
-        Debug.Log("Layer of Ellen: " + spriteRender.sortingOrder);
     }
 
     void Start()
@@ -38,8 +36,7 @@ public class PlayerController : MonoBehaviour
 
     public void PickUpKey()
     {
-        Debug.Log("Player picked up the key.");
-        scoreController.IncreseScore(10);
+        scoreController.IncreaseScore(10);
     }
 
     void Update()
@@ -51,7 +48,6 @@ public class PlayerController : MonoBehaviour
         playerRun(h_Movement, vertical);
         playerCrouch();
         playerJump(vertical);
-        //playerJump();
     }    
 
     private void playerRun(float h_Movement, float vertical)
@@ -90,20 +86,19 @@ public class PlayerController : MonoBehaviour
     // Crouch animation.
     private void playerJump(float vertical)
     {
+        jumpForce();
+
         if (vertical > 0)
         {
-            //rb2d.AddForce(new Vector2(0f, jump), ForceMode2D.Force);
             playerAnimator.SetBool("Jump", true);
         }
         else
         {
             playerAnimator.SetBool("Jump", false);
         }
-        jumpForce();
-        
-        //playerAnimator.SetBool("Jump", ((vertical > 0) ? true : false));
     }
 
+    // Here we are applying force on keydown so the player gets a lift-off
     private void jumpForce() {
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -111,9 +106,7 @@ public class PlayerController : MonoBehaviour
             {
                 rb2d.AddForce(new Vector2(0f, jump), ForceMode2D.Impulse);
                 Debug.Log("Player jumped.");
-
             }
-            //playerAnimator.SetBool("Jump", true);
         }
     }
 
@@ -123,40 +116,34 @@ public class PlayerController : MonoBehaviour
         Vector3 position = transform.position;
         position.x += h_Movement * speed * Time.deltaTime;
         transform.position = position;
-
-        // Move player vertically
-        /*if (vertical > 0)
-        {
-            rb2d.AddForce(new Vector2(0f, jump), ForceMode2D.Force);
-            playerAnimator.SetBool("Jump", true);
-        }
-        else
-        {
-            playerAnimator.SetBool("Jump", false);
-        }
-
-        playerAnimator.SetBool("Jump", ((vertical > 0) ? true : false));*/
     }
 
-    /*private void OnCollisionEnter2D(Collision2D otherObject)
+    private void OnCollisionEnter2D(Collision2D otherObject)
     {
-        TilemapRenderer otherObjectTilemapRender = otherObject.gameObject.GetComponent<TilemapRenderer>();
-
-        if(otherObjectTilemapRender.sortingOrder != spriteRender.sortingOrder)
+        // Check if the other object has Tilemap Renderer attached to it.
+        if (otherObject.gameObject.GetComponent<TilemapRenderer>())
         {
-            onGround = true;
-            Debug.Log("Ground: " + onGround);
-        }
-    }*/
+            TilemapRenderer otherObjectTilemapRender = otherObject.gameObject.GetComponent<TilemapRenderer>();
 
-    /*private void OnCollisionExit2D(Collision2D otherObject)
+            if (otherObjectTilemapRender.sortingOrder != spriteRender.sortingOrder)
+            {
+                onGround = true;
+            }
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D otherObject)
     {
-        TilemapRenderer otherObjectTilemapRender = otherObject.gameObject.GetComponent<TilemapRenderer>();
-
-        if (otherObjectTilemapRender.sortingOrder != spriteRender.sortingOrder)
+        // Check if the other object has Tilemap Renderer attached to it.
+        if (otherObject.gameObject.GetComponent<TilemapRenderer>())
         {
-            onGround = false;
-            Debug.Log("Ground: " + onGround);
+            TilemapRenderer otherObjectTilemapRender = otherObject.gameObject.GetComponent<TilemapRenderer>();
+
+            if (otherObjectTilemapRender.sortingOrder != spriteRender.sortingOrder)
+            {
+                onGround = false;
+            }
         }
-    }*/
+        
+    }
 }

@@ -7,11 +7,6 @@ public class LevelOverController : MonoBehaviour
 {
     public string newScene;
 
-    private void Start()
-    {
-        Debug.Log("Current scene is " + SceneManager.GetActiveScene().name);
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //if (collision.gameObject.CompareTag("Player"))   // Never ever use this.
