@@ -2,17 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     public ScoreController scoreController;
-    //public float jump;
 
     private Animator playerAnimator;
     private BoxCollider2D playerCollider;    // Creating a BoxCollider2D variable
     private SpriteRenderer spriteRender;
     private Rigidbody2D rb2d;
+    private Scene currentScene;
 
     private float playerColliderSizeX, playerColliderSizeY;     // Variables for storing X and Y coordinates of Box Collider.
     private float playerColliderYAxis = 2.24f;
@@ -32,6 +33,19 @@ public class PlayerController : MonoBehaviour
         // Initializing and assigning variables
         playerColliderSizeX = playerCollider.size.x;
         playerColliderSizeY = playerCollider.size.y;
+        currentScene = SceneManager.GetActiveScene();
+    }
+
+    public void KillPlayer()
+    {
+        Debug.Log("Player killed by enemy.");
+        //Destroy(gameObject);
+        ReloadLevel();
+    }
+
+    private void ReloadLevel()
+    {
+        SceneManager.LoadScene(currentScene.buildIndex);
     }
 
     public void PickUpKey()
@@ -42,25 +56,25 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         // Run animation.
-        float h_Movement = Input.GetAxisRaw("Horizontal");
+        float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Jump");
 
-        playerRun(h_Movement, vertical);
+        playerRun(horizontal, vertical);
         playerCrouch();
         playerJump(vertical);
     }    
 
-    private void playerRun(float h_Movement, float vertical)
+    private void playerRun(float horizontal, float vertical)
     {
-        MoveCharacter(h_Movement, vertical);
-        playerAnimator.SetFloat("Speed", Mathf.Abs(h_Movement)); // Mathf.Abs() is used for converting negative values to positive values.
+        MoveCharacter(horizontal, vertical);
+        playerAnimator.SetFloat("Speed", Mathf.Abs(horizontal)); // Mathf.Abs() is used for converting negative values to positive values.
 
         Vector3 scale = transform.localScale;
-        if (h_Movement < 0)
+        if (horizontal < 0)
         {
             scale.x = -1f * Mathf.Abs(scale.x);
         }
-        else if (h_Movement > 0)
+        else if (horizontal > 0)
         {
             scale.x = Mathf.Abs(scale.x);
         }
