@@ -8,6 +8,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public ScoreController scoreController;
+    public HealthController healthController;
     public GameOverController gameOverController;
 
     private Animator playerAnimator;
@@ -47,7 +48,17 @@ public class PlayerController : MonoBehaviour
         gameOverController.PlayerDied();
         this.enabled = false;
         //ReloadLevel();
-    }    
+    }
+
+    public int GetHealth()
+    {
+        return healthController.GetHealth();
+    }
+
+    public void DecreasePlayerHealth()
+    {
+        healthController.DecreaseHealth(10);
+    }
 
     public void PickUpKey()
     {
