@@ -18,7 +18,8 @@ public class PlayerController : MonoBehaviour
     private float playerColliderSizeX, playerColliderSizeY;     // Variables for storing X and Y coordinates of Box Collider.
     private float playerColliderYAxis = 2.24f;
     private float speed = 5.0f, jump = 7.0f;
-    private bool onGround = true;    
+    private bool onGround = true;
+    private bool isDead;
 
     private void Awake()
     {
@@ -34,12 +35,15 @@ public class PlayerController : MonoBehaviour
         playerColliderSizeX = playerCollider.size.x;
         playerColliderSizeY = playerCollider.size.y;
         currentScene = SceneManager.GetActiveScene();
+        isDead = false;
     }
 
     public void KillPlayer()
     {
-        Debug.Log("Player killed by enemy.");
-        //Destroy(gameObject);
+        isDead = true;
+        playerAnimator.SetBool("isDead", isDead);
+        //Debug.Log("isDead: " + isDead);
+        //yield return new WaitForSeconds(5);
         ReloadLevel();
     }
 
@@ -66,7 +70,9 @@ public class PlayerController : MonoBehaviour
 
     private void playerRun(float horizontal, float vertical)
     {
-        MoveCharacter(horizontal, vertical);
+        // Don't move the horizontally player when it is in crouch position.
+        if(playerAnimator.GetBool("isCrouch") == false) MoveCharacter(horizontal, vertical);
+
         playerAnimator.SetFloat("Speed", Mathf.Abs(horizontal)); // Mathf.Abs() is used for converting negative values to positive values.
 
         Vector3 scale = transform.localScale;
@@ -116,12 +122,9 @@ public class PlayerController : MonoBehaviour
     private void jumpForce() {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (onGround)
-            {
-                rb2d.AddForce(new Vector2(0f, jump), ForceMode2D.Impulse);
-                Debug.Log("Player jumped.");
-            }
+            if (onGround) rb2d.AddForce(new Vector2(0f, jump), ForceMode2D.Impulse);
         }
+
     }
 
     private void MoveCharacter(float h_Movement, float vertical)

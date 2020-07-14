@@ -7,7 +7,7 @@ public class DeathController : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.GetComponent<PlayerController>()) {
+        if (collision.gameObject.GetComponent<PlayerController>() != null) {
             Scene currentScene = SceneManager.GetActiveScene();
             SceneManager.LoadScene(currentScene.name);
         }
