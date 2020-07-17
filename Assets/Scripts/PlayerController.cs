@@ -8,12 +8,14 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public ScoreController scoreController;
+    public HealthController healthController;
+    public GameOverController gameOverController;
 
     private Animator playerAnimator;
     private BoxCollider2D playerCollider;    // Creating a BoxCollider2D variable
     private SpriteRenderer spriteRender;
     private Rigidbody2D rb2d;
-    private Scene currentScene;
+    
 
     private float playerColliderSizeX, playerColliderSizeY;     // Variables for storing X and Y coordinates of Box Collider.
     private float playerColliderYAxis = 2.24f;
@@ -33,8 +35,7 @@ public class PlayerController : MonoBehaviour
     {
         // Initializing and assigning variables
         playerColliderSizeX = playerCollider.size.x;
-        playerColliderSizeY = playerCollider.size.y;
-        currentScene = SceneManager.GetActiveScene();
+        playerColliderSizeY = playerCollider.size.y;        
         isDead = false;
     }
 
@@ -44,12 +45,19 @@ public class PlayerController : MonoBehaviour
         playerAnimator.SetBool("isDead", isDead);
         //Debug.Log("isDead: " + isDead);
         //yield return new WaitForSeconds(5);
-        ReloadLevel();
+        gameOverController.PlayerDied();
+        this.enabled = false;
+        //ReloadLevel();
     }
 
-    private void ReloadLevel()
+    public int GetHealth()
     {
-        SceneManager.LoadScene(currentScene.buildIndex);
+        return healthController.GetHealth();
+    }
+
+    public void DecreasePlayerHealth()
+    {
+        healthController.DecreaseHealth(10);
     }
 
     public void PickUpKey()
