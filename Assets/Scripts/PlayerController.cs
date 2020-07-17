@@ -46,7 +46,8 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("isDead: " + isDead);
         //yield return new WaitForSeconds(5);
         gameOverController.PlayerDied();
-        this.enabled = false;
+        // this.enabled = false;
+        gameObject.SetActive(false);
         //ReloadLevel();
     }
 
