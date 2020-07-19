@@ -9,17 +9,15 @@ public class GameOverController : MonoBehaviour
 {
     public Button restartButton;
 
-    private Scene currentScene;
-
     private void Awake()
     {
         restartButton.onClick.AddListener(ReloadLevel);
     }
 
-    private void Start()
+    /*private void Start()
     {
-        currentScene = SceneManager.GetActiveScene();
-    }
+        currentScene
+    }*/
 
     public void PlayerDied() {
         gameObject.SetActive(true);
@@ -27,6 +25,7 @@ public class GameOverController : MonoBehaviour
 
     private void ReloadLevel()
     {
+        Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.buildIndex);
     }
 }
